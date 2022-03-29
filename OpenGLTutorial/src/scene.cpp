@@ -266,6 +266,10 @@ void Scene::prepare(Box& box, std::vector<Shader> shaders) {
     }
 
     lightUBO.clear();
+
+    /*
+        IO
+    */
 }
 
 /*

@@ -48,6 +48,8 @@ class Model;
 
 class Scene {
 public:
+    static Scene scene;
+
     // tries to store models/instances
     avl* models;
     trie::Trie<RigidBody*> instances;

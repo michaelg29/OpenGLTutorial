@@ -46,7 +46,8 @@
 
 #include "scene.h"
 
-Scene scene;
+// construct static scene instance
+Scene Scene::scene(3, 3, "OpenGL Tutorial", 1200, 720);
 
 void processInput(double dt);
 void renderScene(Shader shader);
@@ -75,18 +76,16 @@ void processKey(GLFWwindow* window, int key, int scancode, int action);
 int main() {
     std::cout << "Hello, OpenGL!" << std::endl;
 
-    // construct scene
-    scene = Scene(3, 3, "OpenGL Tutorial", 1200, 720);
     // test if GLFW successfully started and created window
-    if (!scene.init()) {
+    if (!Scene::scene.init()) {
         std::cout << "Could not open window" << std::endl;
-        scene.cleanup();
+        Scene::scene.cleanup();
         return -1;
     }
 
     // set camera
-    scene.cameras.push_back(&cam);
-    scene.activeCamera = 0;
+    Scene::scene.cameras.push_back(&cam);
+    Scene::scene.activeCamera = 0;
 
     // SHADERS===============================
     Shader::loadIntoDefault("defaultHead.gh");
@@ -106,16 +105,16 @@ int main() {
 
     // FONTS===============================
     TextRenderer font(32);
-    if (!scene.registerFont(&font, "comic", "assets/fonts/comic.ttf")) {
+    if (!Scene::scene.registerFont(&font, "comic", "assets/fonts/comic.ttf")) {
         std::cout << "Could not load font" << std::endl;
     }
 
     // MODELS==============================
-    scene.registerModel(&lamp);
+    Scene::scene.registerModel(&lamp);
 
-    scene.registerModel(&wall);
+    Scene::scene.registerModel(&wall);
 
-    scene.registerModel(&sphere);
+    Scene::scene.registerModel(&sphere);
 
     //scene.registerModel(&cube);
 
@@ -123,7 +122,7 @@ int main() {
     box.init();
 
     // load all model data
-    scene.loadModels();
+    Scene::scene.loadModels();
 
     // LIGHTS==============================
 
@@ -133,7 +132,7 @@ int main() {
         glm::vec4(0.6f, 0.6f, 0.6f, 1.0f),
         glm::vec4(0.7f, 0.7f, 0.7f, 1.0f),
         BoundingRegion(glm::vec3(-20.0f, -20.0f, 0.5f), glm::vec3(20.0f, 20.0f, 50.0f)));
-    scene.dirLight = &dirLight;
+    Scene::scene.dirLight = &dirLight;
 
     // point lights
     glm::vec3 pointLightPositions[] = {
@@ -160,11 +159,11 @@ int main() {
             0.5f, 50.0f
         );
         // create physical model for each lamp
-        scene.generateInstance(lamp.id, glm::vec3(10.0f, 0.25f, 10.0f), 0.25f, pointLightPositions[i]);
+        Scene::scene.generateInstance(lamp.id, glm::vec3(10.0f, 0.25f, 10.0f), 0.25f, pointLightPositions[i]);
         // add lamp to scene's light source
-        scene.pointLights.push_back(&pointLights[i]);
+        Scene::scene.pointLights.push_back(&pointLights[i]);
         // activate lamp in scene
-        States::activateIndex(&scene.activePointLights, i);
+        States::activateIndex(&Scene::scene.activePointLights, i);
     }
 
     // spot light
@@ -176,7 +175,7 @@ int main() {
         glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec4(1.0f),
         0.1f, 100.0f
     );
-    scene.spotLights.push_back(&spotLight);
+    Scene::scene.spotLights.push_back(&spotLight);
     //scene.activeSpotLights = 1; // 0b00000001
 
     //scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
@@ -196,14 +195,14 @@ int main() {
     }
 
     // instantiate the brickwall plane
-    scene.generateInstance(wall.id, glm::vec3(1.0f), 1.0f, 
+    Scene::scene.generateInstance(wall.id, glm::vec3(1.0f), 1.0f,
         { 0.0f, 0.0f, 2.0f }, { -1.0f, glm::pi<float>(), 0.0f });
 
     // instantiate instances
-    scene.initInstances();
+    Scene::scene.initInstances();
 
     // finish preparations (octree, etc)
-    scene.prepare(box, { shader });
+    Scene::scene.prepare(box, { shader });
 
     // joystick recognition
     /*mainJ.update();
@@ -214,21 +213,21 @@ int main() {
     Mouse::mouseButtonCallbacks.push_back(printBtn);
     Keyboard::keyCallbacks.push_back(processKey);
 
-    scene.variableLog["time"] = (double)0.0;
+    Scene::scene.variableLog["time"] = (double)0.0;
 
-    scene.defaultFBO.bind(); // bind default framebuffer
+    Scene::scene.defaultFBO.bind(); // bind default framebuffer
 
-    while (!scene.shouldClose()) {
+    while (!Scene::scene.shouldClose()) {
         // calculate dt
         double currentTime = glfwGetTime();
         dt = currentTime - lastFrame;
         lastFrame = currentTime;
 
-        scene.variableLog["time"] += dt;
-        scene.variableLog["fps"] = 1 / dt;
+        Scene::scene.variableLog["time"] += dt;
+        Scene::scene.variableLog["fps"] = 1 / dt;
 
         // update screen values
-        scene.update();
+        Scene::scene.update();
 
         // process input
         processInput(dt);
@@ -238,7 +237,7 @@ int main() {
         // remove launch objects if too far
         for (int i = 0; i < sphere.currentNoInstances; i++) {
             if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f) {
-                scene.markForDeletion(sphere.instances[i]->instanceId);
+                Scene::scene.markForDeletion(sphere.instances[i]->instanceId);
             }
         }
 
@@ -266,40 +265,40 @@ int main() {
         //}
 
         // render scene normally
-        scene.defaultFBO.activate();
-        scene.renderShader(shader);
+        Scene::scene.defaultFBO.activate();
+        Scene::scene.renderShader(shader);
         renderScene(shader);
 
         // render boxes
-        scene.renderShader(boxShader, false);
+        Scene::scene.renderShader(boxShader, false);
         box.render(boxShader);
 
         // send new frame to window
-        scene.newFrame(box);
+        Scene::scene.newFrame(box);
 
         // clear instances that have been marked for deletion
-        scene.clearDeadInstances();
+        Scene::scene.clearDeadInstances();
     }
 
     // clean up objects
-    scene.cleanup();
+    Scene::scene.cleanup();
     return 0;
 }
 
 void renderScene(Shader shader) {
     if (sphere.currentNoInstances > 0) {
-        scene.renderInstances(sphere.id, shader, dt);
+        Scene::scene.renderInstances(sphere.id, shader, dt);
     }
 
     //scene.renderInstances(cube.id, shader, dt);
 
-    scene.renderInstances(lamp.id, shader, dt);
+    Scene::scene.renderInstances(lamp.id, shader, dt);
 
-    scene.renderInstances(wall.id, shader, dt);
+    Scene::scene.renderInstances(wall.id, shader, dt);
 }
 
 void launchItem(float dt) {
-    RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.1f), 1.0f, cam.cameraPos);
+    RigidBody* rb = Scene::scene.generateInstance(sphere.id, glm::vec3(0.1f), 1.0f, cam.cameraPos);
     if (rb) {
         // instance generated successfully
         rb->transferEnergy(25.0f, cam.cameraFront);
@@ -311,10 +310,10 @@ void emitRay() {
     Ray r(cam.cameraPos, cam.cameraFront);
 
     float tmin = std::numeric_limits<float>::max();
-    BoundingRegion* intersected = scene.octree->checkCollisionsRay(r, tmin);
+    BoundingRegion* intersected = Scene::scene.octree->checkCollisionsRay(r, tmin);
     if (intersected) {
         std::cout << "Hits " << intersected->instance->instanceId << " at t = " << tmin << std::endl;
-        scene.markForDeletion(intersected->instance->instanceId);
+        Scene::scene.markForDeletion(intersected->instance->instanceId);
     }
     else {
         std::cout << "No hit" << std::endl;
@@ -323,14 +322,14 @@ void emitRay() {
 
 void processInput(double dt) {
     // process input with cameras
-    scene.processInput(dt);
+    Scene::scene.processInput(dt);
 
     // update flash light
-    if (States::isIndexActive(&scene.activeSpotLights, 0)) {
-        scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
-        scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
-        scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
-        scene.spotLights[0]->updateMatrices();
+    if (States::isIndexActive(&Scene::scene.activeSpotLights, 0)) {
+        Scene::scene.spotLights[0]->position = Scene::scene.getActiveCamera()->cameraPos;
+        Scene::scene.spotLights[0]->direction = Scene::scene.getActiveCamera()->cameraFront;
+        Scene::scene.spotLights[0]->up = Scene::scene.getActiveCamera()->cameraUp;
+        Scene::scene.spotLights[0]->updateMatrices();
     }
 }
 
@@ -364,13 +363,13 @@ void processKey(GLFWwindow* window, int key, int scancode, int action)
     // close window
     if (key == GLFW_KEY_ESCAPE && Keyboard::key(GLFW_KEY_ESCAPE)) {
         std::cout << "Close window" << std::endl;
-        scene.setShouldClose(true);
+        Scene::scene.setShouldClose(true);
     }
 
     // toggle spot light
     if (key == GLFW_KEY_L && Keyboard::keyWentDown(GLFW_KEY_L)) {
         std::cout << "Toggle spot light" << std::endl;
-        States::toggleIndex(&scene.activeSpotLights, 0);
+        States::toggleIndex(&Scene::scene.activeSpotLights, 0);
     }
 
     // launch sphere
