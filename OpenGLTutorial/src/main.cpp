@@ -67,6 +67,9 @@ std::string Shader::defaultDirectory = "assets/shaders";
 
 #include "physics/collisionmesh.h"
 
+void launchItem(float dt);
+void emitRay();
+
 void printBtn(GLFWwindow* window, int btn, int action)
 {
     if (action == GLFW_RELEASE)
@@ -76,6 +79,11 @@ void printBtn(GLFWwindow* window, int btn, int action)
     else if (action == GLFW_PRESS)
     {
         std::cout << "Press button " << btn << std::endl;
+
+        // emit ray
+        if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1)) {
+            emitRay();
+        }
     }
     else if (action == GLFW_REPEAT)
     {
@@ -359,11 +367,6 @@ void processInput(double dt) {
     // launch sphere
     if (Keyboard::keyWentDown(GLFW_KEY_F)) {
         launchItem(dt);
-    }
-
-    // emit ray
-    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1)) {
-        emitRay();
     }
 
     // determine if each lamp should be toggled
