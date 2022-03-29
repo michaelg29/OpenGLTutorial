@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <vector>
+
 /*
     keyboard class to handle keyboard callbacks
 */
@@ -13,6 +15,8 @@ public:
     /*
         static callback
     */
+
+    static std::vector<void(*)(GLFWwindow* window, int key, int scancode, int action)> keyCallbacks;
 
     // key state changed
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

@@ -69,31 +69,8 @@ std::string Shader::defaultDirectory = "assets/shaders";
 
 void launchItem(float dt);
 void emitRay();
-
-void printBtn(GLFWwindow* window, int btn, int action)
-{
-    if (action == GLFW_RELEASE)
-    {
-        std::cout << "Released button " << btn << std::endl;
-    }
-    else if (action == GLFW_PRESS)
-    {
-        std::cout << "Press button " << btn << std::endl;
-
-        // emit ray
-        if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1)) {
-            emitRay();
-        }
-    }
-    else if (action == GLFW_REPEAT)
-    {
-        std::cout << "Repeat press button " << btn << std::endl;
-    }
-    else
-    {
-        std::cout << "Undefined action on button " << btn << std::endl;
-    }
-}
+void printBtn(GLFWwindow* window, int btn, int action);
+void processKey(GLFWwindow* window, int key, int scancode, int action);
 
 int main() {
     std::cout << "Hello, OpenGL!" << std::endl;
@@ -235,6 +212,7 @@ int main() {
     }*/
 
     Mouse::mouseButtonCallbacks.push_back(printBtn);
+    Keyboard::keyCallbacks.push_back(processKey);
 
     scene.variableLog["time"] = (double)0.0;
 
@@ -347,11 +325,6 @@ void processInput(double dt) {
     // process input with cameras
     scene.processInput(dt);
 
-    // close window
-    if (Keyboard::key(GLFW_KEY_ESCAPE)) {
-        scene.setShouldClose(true);
-    }
-
     // update flash light
     if (States::isIndexActive(&scene.activeSpotLights, 0)) {
         scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
@@ -359,20 +332,50 @@ void processInput(double dt) {
         scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
         scene.spotLights[0]->updateMatrices();
     }
+}
 
-    if (Keyboard::keyWentDown(GLFW_KEY_L)) {
-        States::toggleIndex(&scene.activeSpotLights, 0); // toggle spot light
+void printBtn(GLFWwindow* window, int btn, int action)
+{
+    if (action == GLFW_RELEASE)
+    {
+        std::cout << "Released button " << btn << std::endl;
+    }
+    else if (action == GLFW_PRESS)
+    {
+        std::cout << "Press button " << btn << std::endl;
+
+        // emit ray
+        if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1)) {
+            emitRay();
+        }
+    }
+    else if (action == GLFW_REPEAT)
+    {
+        std::cout << "Repeat press button " << btn << std::endl;
+    }
+    else
+    {
+        std::cout << "Undefined action on button " << btn << std::endl;
+    }
+}
+
+void processKey(GLFWwindow* window, int key, int scancode, int action)
+{
+    // close window
+    if (key == GLFW_KEY_ESCAPE && Keyboard::key(GLFW_KEY_ESCAPE)) {
+        std::cout << "Close window" << std::endl;
+        scene.setShouldClose(true);
+    }
+
+    // toggle spot light
+    if (key == GLFW_KEY_L && Keyboard::keyWentDown(GLFW_KEY_L)) {
+        std::cout << "Toggle spot light" << std::endl;
+        States::toggleIndex(&scene.activeSpotLights, 0);
     }
 
     // launch sphere
-    if (Keyboard::keyWentDown(GLFW_KEY_F)) {
+    if (key == GLFW_KEY_F && Keyboard::keyWentDown(GLFW_KEY_F)) {
+        std::cout << "Launch sphere" << std::endl;
         launchItem(dt);
-    }
-
-    // determine if each lamp should be toggled
-    for (int i = 0; i < 4; i++) {
-        if (Keyboard::keyWentDown(GLFW_KEY_1 + i)) {
-            //States::toggleIndex(&scene.activePointLights, i);
-        }
     }
 }
