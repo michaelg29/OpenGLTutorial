@@ -67,6 +67,26 @@ std::string Shader::defaultDirectory = "assets/shaders";
 
 #include "physics/collisionmesh.h"
 
+void printBtn(GLFWwindow* window, int btn, int action)
+{
+    if (action == GLFW_RELEASE)
+    {
+        std::cout << "Released button " << btn << std::endl;
+    }
+    else if (action == GLFW_PRESS)
+    {
+        std::cout << "Press button " << btn << std::endl;
+    }
+    else if (action == GLFW_REPEAT)
+    {
+        std::cout << "Repeat press button " << btn << std::endl;
+    }
+    else
+    {
+        std::cout << "Undefined action on button " << btn << std::endl;
+    }
+}
+
 int main() {
     std::cout << "Hello, OpenGL!" << std::endl;
 
@@ -205,6 +225,8 @@ int main() {
     if (mainJ.isPresent()) {
         std::cout << mainJ.getName() << " is present." << std::endl;
     }*/
+
+    Mouse::mouseButtonCallbacks.push_back(printBtn);
 
     scene.variableLog["time"] = (double)0.0;
 

@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <vector>
+
 /*
     mouse class to handle mouse callbacks
 */
@@ -13,6 +15,10 @@ public:
     /*
         callbacks
     */
+
+    static std::vector<void(*)(GLFWwindow* window, double _x, double _y)> cursorPosCallbacks;
+    static std::vector<void(*)(GLFWwindow* window, int button, int action)> mouseButtonCallbacks;
+    static std::vector<void(*)(GLFWwindow* window, double dx, double dy)> mouseWheelCallbacks;
 
     // cursor position changed
     static void cursorPosCallback(GLFWwindow* window, double _x, double _y);
