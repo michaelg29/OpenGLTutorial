@@ -15,6 +15,11 @@ bool Keyboard::keysChanged[GLFW_KEY_LAST] = { 0 };
 
 // key state changed
 void Keyboard::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key >= GLFW_KEY_LAST)
+    {
+        return;
+    }
+
     if (action != GLFW_RELEASE) {
         if (!keys[key]) {
             keys[key] = true;
@@ -32,11 +37,21 @@ void Keyboard::keyCallback(GLFWwindow* window, int key, int scancode, int action
 
 // get key state
 bool Keyboard::key(int key) {
+    if (key >= GLFW_KEY_LAST)
+    {
+        return false;
+    }
+
     return keys[key];
 }
 
 // get if key recently changed
 bool Keyboard::keyChanged(int key) {
+    if (key >= GLFW_KEY_LAST)
+    {
+        return false;
+    }
+
     bool ret = keysChanged[key];
     // set to false because change no longer new
     keysChanged[key] = false;
@@ -45,10 +60,20 @@ bool Keyboard::keyChanged(int key) {
 
 // get if key recently changed and is up
 bool Keyboard::keyWentDown(int key) {
+    if (key >= GLFW_KEY_LAST)
+    {
+        return false;
+    }
+
     return keys[key] && keyChanged(key);
 }
 
 // get if key recently changed and is down
 bool Keyboard::keyWentUp(int key) {
+    if (key >= GLFW_KEY_LAST)
+    {
+        return false;
+    }
+
     return !keys[key] && keyChanged(key);
 }
