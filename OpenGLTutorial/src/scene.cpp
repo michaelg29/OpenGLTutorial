@@ -111,7 +111,7 @@ bool Scene::init() {
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // v-sync
-    //glfwSwapInterval(1);
+    glfwSwapInterval(1);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor
 
