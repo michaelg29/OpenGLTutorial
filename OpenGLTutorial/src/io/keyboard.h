@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <vector>
+
 /*
     keyboard class to handle keyboard callbacks
 */
@@ -13,6 +15,9 @@ public:
     /*
         static callback
     */
+
+    // list of extended callbacks to call after interrupt
+    static std::vector<void(*)(GLFWwindow *window, int key, int scancode, int action, int mods)> keyCallbacks;
 
     // key state changed
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

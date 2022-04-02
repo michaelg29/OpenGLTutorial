@@ -5,6 +5,10 @@
     define initial static values
 */
 
+std::vector<void(*)(GLFWwindow* window, double _x, double _y)> Mouse::cursorPosCallbacks;
+std::vector<void(*)(GLFWwindow* window, int button, int action, int mods)> Mouse::mouseButtonCallbacks;
+std::vector<void(*)(GLFWwindow* window, double dx, double dy)> Mouse::mouseWheelCallbacks;
+
 // x posiiton
 double Mouse::x = 0;
 // y position
@@ -39,6 +43,7 @@ bool Mouse::buttonsChanged[GLFW_MOUSE_BUTTON_LAST] = { 0 };
 
 // cursor position changed
 void Mouse::cursorPosCallback(GLFWwindow* window, double _x, double _y) {
+    // update state
     x = _x;
     y = _y;
 
@@ -52,10 +57,17 @@ void Mouse::cursorPosCallback(GLFWwindow* window, double _x, double _y) {
     dy = lastY - y; // y coordinates are inverted
     lastX = x;
     lastY = y;
+
+    // call registered callbacks
+    for (void(*func)(GLFWwindow*, double, double) : Mouse::cursorPosCallbacks)
+    {
+        func(window, _x, _y);
+    }
 }
 
 // mouse button state changed
 void Mouse::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    // update state
     if (action != GLFW_RELEASE) {
         if (!buttons[button]) {
             buttons[button] = true;
@@ -65,12 +77,25 @@ void Mouse::mouseButtonCallback(GLFWwindow* window, int button, int action, int 
         buttons[button] = false;
     }
     buttonsChanged[button] = action != GLFW_REPEAT;
+
+    // call registered callbacks
+    for (void(*func)(GLFWwindow*, int, int, int) : Mouse::mouseButtonCallbacks)
+    {
+        func(window, button, action, mods);
+    }
 }
 
 // scroll wheel moved
 void Mouse::mouseWheelCallback(GLFWwindow* window, double dx, double dy) {
+    // update state
     scrollDx = dx;
     scrollDy = dy;
+
+    // call registered callbacks
+    for (void(*func)(GLFWwindow*, double, double) : Mouse::mouseWheelCallbacks)
+    {
+        func(window, dx, dy);
+    }
 }
 
 /*

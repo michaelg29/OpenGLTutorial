@@ -4,6 +4,8 @@
     define initial static values
 */
 
+std::vector<void(*)(GLFWwindow* window, int key, int scancode, int action, int mods)> Keyboard::keyCallbacks;
+
 // key state array (true for down, false for up)
 bool Keyboard::keys[GLFW_KEY_LAST] = { 0 };
 // key changed array (true if changed)
@@ -15,6 +17,7 @@ bool Keyboard::keysChanged[GLFW_KEY_LAST] = { 0 };
 
 // key state changed
 void Keyboard::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    // update state
     if (action != GLFW_RELEASE) {
         if (!keys[key]) {
             keys[key] = true;
@@ -24,6 +27,12 @@ void Keyboard::keyCallback(GLFWwindow* window, int key, int scancode, int action
         keys[key] = false;
     }
     keysChanged[key] = action != GLFW_REPEAT;
+
+    // call registered callbacks
+    for (void(*func)(GLFWwindow*, int, int, int, int) : Keyboard::keyCallbacks)
+    {
+        func(window, key, scancode, action, mods);
+    }
 }
 
 /*

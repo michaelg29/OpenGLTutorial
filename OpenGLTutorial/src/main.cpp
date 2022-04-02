@@ -67,6 +67,13 @@ std::string Shader::defaultDirectory = "assets/shaders";
 
 #include "physics/collisionmesh.h"
 
+void renderScene(Shader shader);
+void processInput(double dt);
+void launchItem();
+void emitRay();
+void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods);
+void mouseButtonChanged(GLFWwindow* window, int button, int action, int mods);
+
 int main() {
     std::cout << "Hello, OpenGL!" << std::endl;
 
@@ -206,6 +213,9 @@ int main() {
         std::cout << mainJ.getName() << " is present." << std::endl;
     }*/
 
+    Keyboard::keyCallbacks.push_back(keyChanged);
+    Mouse::mouseButtonCallbacks.push_back(mouseButtonChanged);
+
     scene.variableLog["time"] = (double)0.0;
 
     scene.defaultFBO.bind(); // bind default framebuffer
@@ -290,7 +300,20 @@ void renderScene(Shader shader) {
     scene.renderInstances(wall.id, shader, dt);
 }
 
-void launchItem(float dt) {
+void processInput(double dt) {
+    // process input with cameras
+    scene.processInput(dt);
+
+    // update flash light
+    if (States::isIndexActive(&scene.activeSpotLights, 0)) {
+        scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
+        scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
+        scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
+        scene.spotLights[0]->updateMatrices();
+    }
+}
+
+void launchItem() {
     RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.1f), 1.0f, cam.cameraPos);
     if (rb) {
         // instance generated successfully
@@ -313,41 +336,35 @@ void emitRay() {
     }
 }
 
-void processInput(double dt) {
-    // process input with cameras
-    scene.processInput(dt);
+void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    switch (action)
+    {
+    case GLFW_RELEASE:
+        std::cout << "Release code " << key << std::endl;
+        break;
+    case GLFW_PRESS:
+        std::cout << "Press code " << key << std::endl;
+        break;
+    case GLFW_REPEAT:
+        std::cout << "Repeat code " << key << std::endl;
+        break;
+    };
 
-    // close window
-    if (Keyboard::key(GLFW_KEY_ESCAPE)) {
+    if (Keyboard::keyWentDown(GLFW_KEY_ESCAPE))
+    {
         scene.setShouldClose(true);
     }
-
-    // update flash light
-    if (States::isIndexActive(&scene.activeSpotLights, 0)) {
-        scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
-        scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
-        scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
-        scene.spotLights[0]->updateMatrices();
+    if (Keyboard::keyWentDown(GLFW_KEY_F))
+    {
+        launchItem();
     }
+}
 
-    if (Keyboard::keyWentDown(GLFW_KEY_L)) {
-        States::toggleIndex(&scene.activeSpotLights, 0); // toggle spot light
-    }
-
-    // launch sphere
-    if (Keyboard::keyWentDown(GLFW_KEY_F)) {
-        launchItem(dt);
-    }
-
-    // emit ray
-    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1)) {
+void mouseButtonChanged(GLFWwindow* window, int button, int action, int mods)
+{
+    if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1))
+    {
         emitRay();
-    }
-
-    // determine if each lamp should be toggled
-    for (int i = 0; i < 4; i++) {
-        if (Keyboard::keyWentDown(GLFW_KEY_1 + i)) {
-            //States::toggleIndex(&scene.activePointLights, i);
-        }
     }
 }

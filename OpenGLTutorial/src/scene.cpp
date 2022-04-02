@@ -342,7 +342,7 @@ void Scene::newFrame(Box &box) {
 
     // send new frame to window
     glfwSwapBuffers(window);
-    glfwPollEvents();
+    glfwWaitEventsTimeout(0.001);
 }
 
 // set uniform shader varaibles (lighting, etc)
