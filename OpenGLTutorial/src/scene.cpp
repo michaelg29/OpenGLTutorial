@@ -277,19 +277,7 @@ void Scene::processInput(double dt) {
     if (activeCamera != -1 && activeCamera < cameras.size()) {
         // active camera exists
 
-        // set camera direction
-        double dx = Mouse::getDX(), dy = Mouse::getDY();
-        if (dx != 0 || dy != 0) {
-            cameras[activeCamera]->updateCameraDirection(dx, dy);
-        }
-
-        // set camera zoom
-        double scrollDy = Mouse::getScrollDY();
-        if (scrollDy != 0) {
-            cameras[activeCamera]->updateCameraZoom(scrollDy);
-        }
-
-        // set camera pos
+        // set camera pos, continuously poll
         if (Keyboard::key(GLFW_KEY_W)) {
             cameras[activeCamera]->updateCameraPos(CameraDirection::FORWARD, dt);
         }
@@ -320,6 +308,58 @@ void Scene::processInput(double dt) {
 
         // set pos
         cameraPos = cameras[activeCamera]->cameraPos;
+    }
+}
+
+void Scene::keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+
+}
+
+void Scene::cursorChanged(GLFWwindow* window, double _x, double _y)
+{
+    if (activeCamera != -1 && activeCamera < cameras.size()) {
+        // active camera exists
+
+        // set camera direction
+        double dx = Mouse::getDX(), dy = Mouse::getDY();
+        if (dx != 0 || dy != 0) {
+            cameras[activeCamera]->updateCameraDirection(dx, dy);
+        }
+
+        // set matrices
+        view = cameras[activeCamera]->getViewMatrix();
+        projection = glm::perspective(
+            glm::radians(cameras[activeCamera]->getZoom()),	    // FOV
+            (float)scrWidth / (float)scrHeight,					// aspect ratio
+            0.1f, 100.0f										// near and far bounds
+        );
+    }
+}
+
+void Scene::mouseButtonChanged(GLFWwindow* window, int button, int action, int mods)
+{
+
+}
+
+void Scene::scrollChanged(GLFWwindow* window, double dx, double dy)
+{
+    if (activeCamera != -1 && activeCamera < cameras.size()) {
+        // active camera exists
+
+        // set camera zoom
+        double scrollDy = Mouse::getScrollDY();
+        if (scrollDy != 0) {
+            cameras[activeCamera]->updateCameraZoom(scrollDy);
+        }
+
+        // set matrices
+        view = cameras[activeCamera]->getViewMatrix();
+        projection = glm::perspective(
+            glm::radians(cameras[activeCamera]->getZoom()),	    // FOV
+            (float)scrWidth / (float)scrHeight,					// aspect ratio
+            0.1f, 100.0f										// near and far bounds
+        );
     }
 }
 
