@@ -273,7 +273,7 @@ void Scene::prepare(Box& box, std::vector<Shader> shaders) {
 */
 
 // process input
-void Scene::processInput(float dt) {
+void Scene::processInput(double dt) {
     if (activeCamera != -1 && activeCamera < cameras.size()) {
         // active camera exists
 

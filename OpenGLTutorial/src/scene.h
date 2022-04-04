@@ -105,7 +105,7 @@ public:
     */
 
     // process input
-    void processInput(float dt);
+    void processInput(double dt);
 
     // update screen before each frame
     void update();
