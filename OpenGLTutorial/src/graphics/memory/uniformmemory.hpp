@@ -167,7 +167,7 @@ namespace UBO {
     inline Element newStruct(std::vector<Element> subelements) {
         Element ret(Type::STRUCT);
         ret.list.insert(ret.list.end(), subelements.begin(), subelements.end());
-        ret.length = ret.list.size();
+        ret.length = (unsigned int)ret.list.size();
 
         // base alignment is largest of its subelements
         if (subelements.size()) {
@@ -287,7 +287,7 @@ namespace UBO {
             bool popped = false;
 
             for (int i = currentDepth; i >= 0; i--) {
-                int advancedIdx = ++indexStack[i].first; // move cursor forward in the iterable
+                unsigned int advancedIdx = ++indexStack[i].first; // move cursor forward in the iterable
                 if (advancedIdx >= indexStack[i].second->length) {
                     // iterated through entire array or struct
                     // pop iterable from the stack
@@ -330,14 +330,14 @@ namespace UBO {
 
         template<typename T, typename V>
         void writeArrayContainer(T* container, unsigned int n) {
-            for (int i = 0; i < n; i++) {
+            for (unsigned int i = 0; i < n; i++) {
                 writeElement<V>(&container->operator[](i)); // container[i] translates to container + i
             }
         }
 
         void advanceCursor(unsigned int n) {
             // skip number of elements
-            for (int i = 0; i < n; i++) {
+            for (unsigned int i = 0; i < n; i++) {
                 Element element = getNextElement();
                 offset = roundUpPow2(offset, element.alignPow2());
                 if (poppedOffset) {

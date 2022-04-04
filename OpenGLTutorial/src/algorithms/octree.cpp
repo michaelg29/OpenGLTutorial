@@ -99,7 +99,7 @@ void Octree::node::build() {
     }
 
     // determine which octants to place objects in
-    for (int i = 0, len = objects.size(); i < len; i++) {
+    for (int i = 0, len = (int)objects.size(); i < len; i++) {
         BoundingRegion br = objects[i];
         for (int j = 0; j < NO_CHILDREN; j++) {
             if (octants[j].containsRegion(br)) {
@@ -167,7 +167,7 @@ void Octree::node::update(Box &box) {
         }
 
         // remove objects that don't exist anymore
-        for (int i = 0, listSize = objects.size(); i < listSize; i++) {
+        for (int i = 0, listSize = (int)objects.size(); i < listSize; i++) {
             // remove if kill switch active
             if (States::isActive(&objects[i].instance->state, INSTANCE_DEAD)) {
                 objects.erase(objects.begin() + i);
@@ -179,7 +179,7 @@ void Octree::node::update(Box &box) {
 
         // get moved objects that were in this leaf in previous frame
         std::stack<int> movedObjects;
-        for (int i = 0, listSize = objects.size(); i < listSize; i++) {
+        for (int i = 0, listSize = (int)objects.size(); i < listSize; i++) {
             if (States::isActive(&objects[i].instance->state, INSTANCE_MOVED)) {
                 // if moved switch active, transform region and push to list
                 objects[i].transform();
@@ -287,7 +287,7 @@ void Octree::node::processPending() {
         build();
     }
     else {
-        for (int i = 0, len = queue.size(); i < len; i++) {
+        for (int i = 0, len = (int)queue.size(); i < len; i++) {
             BoundingRegion br = queue.front();
             if (region.containsRegion(br)) {
                 // insert object immediately
@@ -344,7 +344,7 @@ bool Octree::node::insert(BoundingRegion obj) {
 
     // determine which octants to put objects in
     std::vector<BoundingRegion> octLists[NO_CHILDREN]; // array of list of objects in each octant
-    for (int i = 0, len = objects.size(); i < len; i++) {
+    for (int i = 0, len = (int)objects.size(); i < len; i++) {
         objects[i].cell = this;
         for (int j = 0; j < NO_CHILDREN; j++) {
             if (octants[j].containsRegion(objects[i])) {
@@ -392,17 +392,17 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj) {
         if (br.intersectsWith(obj)) {
             // coarse check passed
 
-            unsigned int noFacesBr = br.collisionMesh ? br.collisionMesh->faces.size() : 0;
-            unsigned int noFacesObj = obj.collisionMesh ? obj.collisionMesh->faces.size() : 0;
+            unsigned int noFacesBr = br.collisionMesh ? (unsigned int)br.collisionMesh->faces.size() : 0;
+            unsigned int noFacesObj = obj.collisionMesh ? (unsigned int)obj.collisionMesh->faces.size() : 0;
 
             glm::vec3 norm;
 
             if (noFacesBr) {
-                unsigned int noFacesBr = br.collisionMesh->faces.size();
+                unsigned int noFacesBr = (unsigned int)br.collisionMesh->faces.size();
 
                 if (noFacesObj) {
                     // both have collision meshes
-                    unsigned int noFacesObj = obj.collisionMesh->faces.size();
+                    unsigned int noFacesObj = (unsigned int)obj.collisionMesh->faces.size();
 
                     // check all faces in br against all faces in obj
                     for (unsigned int i = 0; i < noFacesBr; i++) {
@@ -448,9 +448,9 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj) {
                 if (noFacesObj) {
                     // obj has a collision mesh, br does not
                     // check all faces in obj against br's sphere
-                    unsigned int noFacesObj = obj.collisionMesh->faces.size();
+                    unsigned int noFacesObj = (unsigned int)obj.collisionMesh->faces.size();
 
-                    for (int i = 0; i < noFacesObj; i++) {
+                    for (unsigned int i = 0; i < noFacesObj; i++) {
                         if (obj.collisionMesh->faces[i].collidesWithSphere(
                             obj.instance,
                             br,

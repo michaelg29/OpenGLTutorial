@@ -65,7 +65,7 @@ namespace jsoncpp {
         json(const char* val)														// string
             : type(json_type::json_string), s_val(val) {}
         json(double val)															// float
-            : type(json_type::json_float), f_val(val) {}
+            : type(json_type::json_float), f_val((float)val) {}
         json(float val)																// float
             : type(json_type::json_float), f_val(val) {}
         json(int val)																// integer
@@ -88,7 +88,7 @@ namespace jsoncpp {
         // set methods
         void operator=(std::string val) { type = json_type::json_string; s_val = val; }						// string
         void operator=(const char* val) { type = json_type::json_string; s_val = val; }						// string
-        void operator=(double val) { type = json_type::json_float; f_val = val; }							// float
+        void operator=(double val) { type = json_type::json_float; f_val = (float)val; }				    // float
         void operator=(float val) { type = json_type::json_float; f_val = val; }							// float
         void operator=(int val) { type = json_type::json_int; i_val = val; }								// int
         void operator=(bool val) { type = json_type::json_bool; b_val = val; }								// boolean
@@ -193,7 +193,7 @@ namespace jsoncpp {
                     i_val += val.i_val;
                 }
                 else if (val.type == json_type::json_float) {
-                    i_val += val.f_val;
+                    i_val += (int)val.f_val;
                 }
                 else {
                     // TODO: throw error
@@ -238,8 +238,8 @@ namespace jsoncpp {
         // remove object from list
         bool erase(json item) {
             if (type == json_type::json_list) {
-                unsigned int size = l_val.size();
-                for (int i = 0; i < size; i++) {
+                unsigned int size = (unsigned int)l_val.size();
+                for (unsigned int i = 0; i < size; i++) {
                     if (l_val[i] == item) {
                         l_val.erase(l_val.begin() + i);
                         return true;
@@ -256,7 +256,7 @@ namespace jsoncpp {
         // get length of list
         unsigned int length() {
             if (type == json_type::json_list) {
-                return l_val.size();
+                return (unsigned int)l_val.size();
             }
             else {
                 // TODO: throw error
@@ -297,7 +297,7 @@ namespace jsoncpp {
             return type == json_type::json_float ? f_val : i_val;
         }
         template <> int val<int>() {
-            return type == json_type::json_int ? i_val : f_val;
+            return type == json_type::json_int ? i_val : (int)f_val;
         }
         template <> bool val<bool>() { return b_val; }
 

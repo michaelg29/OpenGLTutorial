@@ -123,7 +123,7 @@ public:
 
     void cleanup() {
         // delete RBOs
-        glDeleteRenderbuffers(rbos.size(), &rbos[0]);
+        glDeleteRenderbuffers((GLsizei)rbos.size(), &rbos[0]);
 
         // delete generated textures
         for (Texture t : textures) {

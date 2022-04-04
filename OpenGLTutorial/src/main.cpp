@@ -242,7 +242,7 @@ int main() {
         // activate the directional light's FBO
 
         // remove launch objects if too far
-        for (int i = 0; i < sphere.currentNoInstances; i++) {
+        for (unsigned int i = 0; i < sphere.currentNoInstances; i++) {
             if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f) {
                 scene.markForDeletion(sphere.instances[i]->instanceId);
             }
@@ -294,14 +294,14 @@ int main() {
 
 void renderScene(Shader shader) {
     if (sphere.currentNoInstances > 0) {
-        scene.renderInstances(sphere.id, shader, dt);
+        scene.renderInstances(sphere.id, shader, (float)dt);
     }
 
     //scene.renderInstances(cube.id, shader, dt);
 
-    scene.renderInstances(lamp.id, shader, dt);
+    scene.renderInstances(lamp.id, shader, (float)dt);
 
-    scene.renderInstances(wall.id, shader, dt);
+    scene.renderInstances(wall.id, shader, (float)dt);
 }
 
 void processInput(double dt) {

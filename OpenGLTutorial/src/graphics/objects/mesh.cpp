@@ -46,12 +46,12 @@ void averageVectors(glm::vec3& baseVec, glm::vec3 addition, unsigned char existi
 // calculate tangent vectors for each face
 void Vertex::calcTanVectors(std::vector<Vertex>& list, std::vector<unsigned int>& indices) {
     unsigned char* counts = (unsigned char*)malloc(list.size() * sizeof(unsigned char));
-    for (unsigned int i = 0, len = list.size(); i < len; i++) {
+    for (unsigned int i = 0, len = (unsigned int)list.size(); i < len; i++) {
         counts[i] = 0;
     }
 
     // iterate through indices and calculate vectors for each face
-    for (unsigned int i = 0, len = indices.size(); i < len; i += 3) {
+    for (unsigned int i = 0, len = (unsigned int)indices.size(); i < len; i += 3) {
         // 3 vertices corresponding to the face
         Vertex v1 = list[indices[i + 0]];
         Vertex v2 = list[indices[i + 1]];
@@ -124,14 +124,14 @@ void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _in
     VAO["EBO"] = BufferObject(GL_ELEMENT_ARRAY_BUFFER);
     VAO["EBO"].generate();
     VAO["EBO"].bind();
-    VAO["EBO"].setData<GLuint>(this->indices.size(), &this->indices[0], GL_STATIC_DRAW);
+    VAO["EBO"].setData<GLuint>((GLuint)this->indices.size(), &this->indices[0], GL_STATIC_DRAW);
 
     // load data into vertex buffers
     VAO["VBO"] = BufferObject(GL_ARRAY_BUFFER);
     VAO["VBO"].generate();
     VAO["VBO"].bind();
 
-    unsigned int size = this->vertices.size();
+    unsigned int size = (unsigned int)this->vertices.size();
     if (pad && size) {
         size++;
     }
@@ -228,7 +228,7 @@ void Mesh::render(Shader shader, unsigned int noInstances) {
     }
     
     VAO.bind();
-    VAO.draw(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, noInstances);
+    VAO.draw(GL_TRIANGLES, (GLuint)indices.size(), GL_UNSIGNED_INT, 0, noInstances);
     ArrayObject::clear();
 
     glActiveTexture(GL_TEXTURE0);
@@ -255,13 +255,13 @@ void Mesh::setup() {
     VAO["EBO"] = BufferObject(GL_ELEMENT_ARRAY_BUFFER);
     VAO["EBO"].generate();
     VAO["EBO"].bind();
-    VAO["EBO"].setData<GLuint>(indices.size(), &indices[0], GL_STATIC_DRAW);
+    VAO["EBO"].setData<GLuint>((GLuint)indices.size(), &indices[0], GL_STATIC_DRAW);
 
     // generate/set VBO
     VAO["VBO"] = BufferObject(GL_ARRAY_BUFFER);
     VAO["VBO"].generate();
     VAO["VBO"].bind();
-    VAO["VBO"].setData<Vertex>(vertices.size(), &vertices[0], GL_STATIC_DRAW);
+    VAO["VBO"].setData<Vertex>((GLuint)vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
     // set vertex attrib pointers
     // vertex positions

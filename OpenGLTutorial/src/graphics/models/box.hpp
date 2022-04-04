@@ -59,13 +59,13 @@ public:
         VAO["EBO"] = BufferObject(GL_ELEMENT_ARRAY_BUFFER);
         VAO["EBO"].generate();
         VAO["EBO"].bind();
-        VAO["EBO"].setData<GLuint>(indices.size(), &indices[0], GL_STATIC_DRAW);
+        VAO["EBO"].setData<GLuint>((GLuint)indices.size(), &indices[0], GL_STATIC_DRAW);
 
         // generate VBO
         VAO["VBO"] = BufferObject(GL_ARRAY_BUFFER);
         VAO["VBO"].generate();
         VAO["VBO"].bind();
-        VAO["VBO"].setData<GLfloat>(vertices.size(), &vertices[0], GL_STATIC_DRAW);
+        VAO["VBO"].setData<GLfloat>((GLuint)vertices.size(), &vertices[0], GL_STATIC_DRAW);
         VAO["VBO"].setAttPointer<GLfloat>(0, 3, GL_FLOAT, 3, 0);
 
         // position VBO - dynamic
@@ -106,7 +106,7 @@ public:
 
         // render data
         VAO.bind();
-        VAO.draw(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0, instances);
+        VAO.draw(GL_LINES, (GLuint)indices.size(), GL_UNSIGNED_INT, 0, instances);
         ArrayObject::clear();
     }
 

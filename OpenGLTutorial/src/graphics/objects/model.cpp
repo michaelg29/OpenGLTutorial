@@ -71,7 +71,7 @@ void Model::render(Shader shader, float dt, Scene* scene) {
         bool doUpdate = States::isActive(&switches, DYNAMIC);
 
         // iterate through each instance
-        for (int i = 0; i < currentNoInstances; i++) {
+        for (unsigned int i = 0; i < currentNoInstances; i++) {
             if (doUpdate) {
                 // update Rigid Body
                 instances[i]->update(dt);
@@ -101,7 +101,7 @@ void Model::render(Shader shader, float dt, Scene* scene) {
     shader.setFloat("material.shininess", 0.5f);
 
     // render each mesh
-    for (unsigned int i = 0, noMeshes = meshes.size(); i < noMeshes; i++) {
+    for (unsigned int i = 0, noMeshes = (unsigned int)meshes.size(); i < noMeshes; i++) {
         meshes[i].render(shader, currentNoInstances);
     }
 }
@@ -109,7 +109,7 @@ void Model::render(Shader shader, float dt, Scene* scene) {
 // free up memory
 void Model::cleanup() {
     // free all instances
-    for (unsigned int i = 0, len = instances.size(); i < len; i++) {
+    for (unsigned int i = 0, len = (unsigned int)instances.size(); i < len; i++) {
         if (instances[i]) {
             //free(instances[i]);
         }
@@ -117,7 +117,7 @@ void Model::cleanup() {
     instances.clear();
 
     // cleanup each mesh
-    for (unsigned int i = 0, len = instances.size(); i < len; i++) {
+    for (unsigned int i = 0, len = (unsigned int)instances.size(); i < len; i++) {
         meshes[i].cleanup();
     }
 
@@ -180,7 +180,7 @@ void Model::initInstances() {
     normalModelVBO.setData<glm::mat3>(UPPER_BOUND, normalModelData, usage);
 
     // set attribute pointers for each mesh
-    for (unsigned int i = 0, size = meshes.size(); i < size; i++) {
+    for (unsigned int i = 0, size = (unsigned int)meshes.size(); i < size; i++) {
         meshes[i].VAO.bind();
 
         // set vertex attrib pointers
@@ -221,7 +221,7 @@ void Model::removeInstance(std::string instanceId) {
 // get index of instance with id
 unsigned int Model::getIdx(std::string id) {
     // test each instance
-    for (int i = 0; i < currentNoInstances; i++) {
+    for (unsigned int i = 0; i < currentNoInstances; i++) {
         if (instances[i]->instanceId == id) {
             return i;
         }

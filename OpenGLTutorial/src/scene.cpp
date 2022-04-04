@@ -231,7 +231,7 @@ void Scene::prepare(Box& box, std::vector<Shader> shaders) {
     lightUBO.writeArrayContainer<glm::mat4, glm::vec4>(&dirLight->lightSpaceMatrix, 4);
 
     // point lights
-    noPointLights = std::min<unsigned int>(pointLights.size(), MAX_POINT_LIGHTS);
+    noPointLights = std::min<unsigned int>((unsigned int)pointLights.size(), MAX_POINT_LIGHTS);
     lightUBO.writeElement<unsigned int>(&noPointLights);
     unsigned int i = 0;
     for (; i < noPointLights; i++) {
@@ -247,7 +247,7 @@ void Scene::prepare(Box& box, std::vector<Shader> shaders) {
     lightUBO.advanceArray(MAX_POINT_LIGHTS - i); // advance to finish array
 
     // spot lights
-    noSpotLights = std::min<unsigned int>(spotLights.size(), MAX_SPOT_LIGHTS);
+    noSpotLights = std::min<unsigned int>((unsigned int)spotLights.size(), MAX_SPOT_LIGHTS);
     lightUBO.writeElement<unsigned int>(&noSpotLights);
     for (i = 0; i < noSpotLights; i++) {
         lightUBO.writeElement<glm::vec3>(&spotLights[i]->position);
@@ -393,7 +393,7 @@ void Scene::renderShader(Shader shader, bool applyLighting) {
         dirLight->render(shader, textureIdx--);
 
         // point lights
-        unsigned int noLights = pointLights.size();
+        unsigned int noLights = (unsigned int)pointLights.size();
         unsigned int noActiveLights = 0;
         for (unsigned int i = 0; i < noLights; i++) {
             if (States::isIndexActive(&activePointLights, i)) {
@@ -405,7 +405,7 @@ void Scene::renderShader(Shader shader, bool applyLighting) {
         shader.setInt("noPointLights", noActiveLights);
 
         // spot lights
-        noLights = spotLights.size();
+        noLights = (unsigned int)spotLights.size();
         noActiveLights = 0;
         for (unsigned int i = 0; i < noLights; i++) {
             if (States::isIndexActive(&activeSpotLights, i)) {
@@ -630,7 +630,7 @@ void Scene::clearDeadInstances() {
 
 // generate next instance id
 std::string Scene::generateId() {
-    for (int i = currentId.length() - 1; i >= 0; i--) {
+    for (int i = (int)currentId.length() - 1; i >= 0; i--) {
         if ((int)currentId[i] != (int)'z') {
             // increment then break
             currentId[i] = (char)(((int)currentId[i]) + 1);

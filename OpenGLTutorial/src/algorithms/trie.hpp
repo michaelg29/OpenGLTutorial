@@ -98,7 +98,7 @@ namespace trie {
             root = new node<T>;
             root->exists = false;
             root->children = new node<T> * [noChars];
-            for (int i = 0; i < noChars; i++) {
+            for (unsigned int i = 0; i < noChars; i++) {
                 root->children[i] = NULL;
             }
         }
@@ -126,7 +126,7 @@ namespace trie {
                     current->children[idx] = new node<T>;
                     current->children[idx]->exists = false;
                     current->children[idx]->children = new node<T> * [noChars];
-                    for (int i = 0; i < noChars; i++) {
+                    for (unsigned int i = 0; i < noChars; i++) {
                         current->children[idx]->children[i] = NULL;
                     }
                 }
@@ -263,7 +263,7 @@ namespace trie {
                 return;
             }
 
-            for (int i = 0; i < noChars; i++) {
+            for (unsigned int i = 0; i < noChars; i++) {
                 if (top->children[i]) {
                     // child exists, deallocate it
                     unloadNode(top->children[i]);

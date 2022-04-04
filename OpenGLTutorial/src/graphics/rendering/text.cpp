@@ -86,7 +86,7 @@ void TextRenderer::render(Shader shader, std::string text, float x, float y, glm
 	VAO.bind();
 
 	// go through all characters of string
-	for (int i = 0, len = text.size(); i < len; i++) {
+	for (int i = 0, len = (int)text.size(); i < len; i++) {
 		Character c = chars[text[i]];
 
 		float xPos = x + c.bearing.x * scale.x;
