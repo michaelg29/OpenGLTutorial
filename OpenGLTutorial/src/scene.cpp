@@ -277,31 +277,37 @@ void Scene::processInput(double dt) {
     if (activeCamera != -1 && activeCamera < cameras.size()) {
         // active camera exists
 
-        // set camera pos, continuously poll
+        // set camera pos/matrices, continuously poll
         if (Keyboard::key(GLFW_KEY_W)) {
             cameras[activeCamera]->updateCameraPos(CameraDirection::FORWARD, dt);
+            cameraPos = cameras[activeCamera]->cameraPos;
+            updateCameraMatrices(activeCamera);
         }
         if (Keyboard::key(GLFW_KEY_S)) {
             cameras[activeCamera]->updateCameraPos(CameraDirection::BACKWARD, dt);
+            cameraPos = cameras[activeCamera]->cameraPos;
+            updateCameraMatrices(activeCamera);
         }
         if (Keyboard::key(GLFW_KEY_D)) {
             cameras[activeCamera]->updateCameraPos(CameraDirection::RIGHT, dt);
+            cameraPos = cameras[activeCamera]->cameraPos;
+            updateCameraMatrices(activeCamera);
         }
         if (Keyboard::key(GLFW_KEY_A)) {
             cameras[activeCamera]->updateCameraPos(CameraDirection::LEFT, dt);
+            cameraPos = cameras[activeCamera]->cameraPos;
+            updateCameraMatrices(activeCamera);
         }
         if (Keyboard::key(GLFW_KEY_SPACE)) {
             cameras[activeCamera]->updateCameraPos(CameraDirection::UP, dt);
+            cameraPos = cameras[activeCamera]->cameraPos;
+            updateCameraMatrices(activeCamera);
         }
         if (Keyboard::key(GLFW_KEY_LEFT_SHIFT)) {
             cameras[activeCamera]->updateCameraPos(CameraDirection::DOWN, dt);
+            cameraPos = cameras[activeCamera]->cameraPos;
+            updateCameraMatrices(activeCamera);
         }
-
-        // set pos
-        cameraPos = cameras[activeCamera]->cameraPos;
-
-        // set matrices
-        updateCameraMatrices(activeCamera);
     }
 }
 
