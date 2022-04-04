@@ -72,7 +72,9 @@ void processInput(double dt);
 void launchItem();
 void emitRay();
 void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods);
+void cursorChanged(GLFWwindow* window, double _x, double _y);
 void mouseButtonChanged(GLFWwindow* window, int button, int action, int mods);
+void scrollChanged(GLFWwindow* window, double dx, double dy);
 
 int main() {
     std::cout << "Hello, OpenGL!" << std::endl;
@@ -214,7 +216,9 @@ int main() {
     }*/
 
     Keyboard::keyCallbacks.push_back(keyChanged);
+    Mouse::cursorPosCallbacks.push_back(cursorChanged);
     Mouse::mouseButtonCallbacks.push_back(mouseButtonChanged);
+    Mouse::mouseWheelCallbacks.push_back(scrollChanged);
 
     scene.variableLog["time"] = (double)0.0;
 
@@ -359,6 +363,13 @@ void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         launchItem();
     }
+
+    scene.keyChanged(window, key, scancode, action, mods);
+}
+
+void cursorChanged(GLFWwindow* window, double _x, double _y)
+{
+    scene.cursorChanged(window, _x, _y);
 }
 
 void mouseButtonChanged(GLFWwindow* window, int button, int action, int mods)
@@ -367,4 +378,11 @@ void mouseButtonChanged(GLFWwindow* window, int button, int action, int mods)
     {
         emitRay();
     }
+
+    scene.mouseButtonChanged(window, button, action, mods);
+}
+
+void scrollChanged(GLFWwindow* window, double dx, double dy)
+{
+    scene.scrollChanged(window, dx, dy);
 }

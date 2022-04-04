@@ -106,6 +106,10 @@ public:
 
     // process input
     void processInput(double dt);
+    void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods);
+    void cursorChanged(GLFWwindow* window, double _x, double _y);
+    void mouseButtonChanged(GLFWwindow* window, int button, int action, int mods);
+    void scrollChanged(GLFWwindow* window, double dx, double dy);
 
     // update screen before each frame
     void update();
