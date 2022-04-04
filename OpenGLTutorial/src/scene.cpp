@@ -297,17 +297,11 @@ void Scene::processInput(double dt) {
             cameras[activeCamera]->updateCameraPos(CameraDirection::DOWN, dt);
         }
 
-        // set matrices
-        view = cameras[activeCamera]->getViewMatrix();
-        projection = glm::perspective(
-            glm::radians(cameras[activeCamera]->getZoom()),	    // FOV
-            (float)scrWidth / (float)scrHeight,					// aspect ratio
-            0.1f, 100.0f										// near and far bounds
-        );
-        textProjection = glm::ortho(0.0f, (float)scrWidth, 0.0f, (float)scrHeight);
-
         // set pos
         cameraPos = cameras[activeCamera]->cameraPos;
+
+        // set matrices
+        updateCameraMatrices(activeCamera);
     }
 }
 
@@ -328,12 +322,7 @@ void Scene::cursorChanged(GLFWwindow* window, double _x, double _y)
         }
 
         // set matrices
-        view = cameras[activeCamera]->getViewMatrix();
-        projection = glm::perspective(
-            glm::radians(cameras[activeCamera]->getZoom()),	    // FOV
-            (float)scrWidth / (float)scrHeight,					// aspect ratio
-            0.1f, 100.0f										// near and far bounds
-        );
+        updateCameraMatrices(activeCamera);
     }
 }
 
@@ -354,12 +343,7 @@ void Scene::scrollChanged(GLFWwindow* window, double dx, double dy)
         }
 
         // set matrices
-        view = cameras[activeCamera]->getViewMatrix();
-        projection = glm::perspective(
-            glm::radians(cameras[activeCamera]->getZoom()),	    // FOV
-            (float)scrWidth / (float)scrHeight,					// aspect ratio
-            0.1f, 100.0f										// near and far bounds
-        );
+        updateCameraMatrices(activeCamera);
     }
 }
 
@@ -543,6 +527,19 @@ void Scene::setWindowColor(float r, float g, float b, float a) {
     bg[1] = g;
     bg[2] = b;
     bg[3] = a;
+}
+
+// update view matrices using camera at index
+void Scene::updateCameraMatrices(int idx)
+{
+    // set matrices
+    view = cameras[activeCamera]->getViewMatrix();
+    projection = glm::perspective(
+        glm::radians(cameras[activeCamera]->getZoom()),	    // FOV
+        (float)scrWidth / (float)scrHeight,					// aspect ratio
+        0.1f, 100.0f										// near and far bounds
+    );
+    textProjection = glm::ortho(0.0f, (float)scrWidth, 0.0f, (float)scrHeight);
 }
 
 /*

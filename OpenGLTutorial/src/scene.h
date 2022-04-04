@@ -162,6 +162,9 @@ public:
     // set window background color
     void setWindowColor(float r, float g, float b, float a);
 
+    // update view matrices using camera at index
+    void updateCameraMatrices(int idx);
+
     /*
         Model/instance methods
     */
