@@ -40,6 +40,7 @@
 	* *glad\include* -> *$(SolutionDir)\Linking\include*
 		* this should add two folders (*glad*, *KHR*) to your include directory
 	* *glad\src\glad.c* -> *$(ProjectDir)\lib*
+3. Include the glad.c source file with the project in Visual Studio
 
 ## GLM
 1. Download the latest package from [GLM](https://github.com/g-truc/glm/tags)
