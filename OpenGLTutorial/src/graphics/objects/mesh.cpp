@@ -30,25 +30,10 @@ std::vector<Vertex> Vertex::genList(float* vertices, int noVertices) {
     return ret;
 }
 
-void averageVectors(glm::vec3& baseVec, glm::vec3 addition, unsigned char existingContributions) {
-    if (!existingContributions) {
-        baseVec = addition;
-    }
-    else {
-        float f = 1 / ((float)existingContributions + 1);
-
-        baseVec *= (float)(existingContributions)*f;
-
-        baseVec += addition * f;
-    }
-}
-
 // calculate tangent vectors for each face
 void Vertex::calcTanVectors(std::vector<Vertex>& list, std::vector<unsigned int>& indices) {
     unsigned char* counts = (unsigned char*)malloc(list.size() * sizeof(unsigned char));
-    for (unsigned int i = 0, len = (unsigned int)list.size(); i < len; i++) {
-        counts[i] = 0;
-    }
+    memset(counts, 0, (int)list.size());
 
     // iterate through indices and calculate vectors for each face
     for (unsigned int i = 0, len = (unsigned int)indices.size(); i < len; i += 3) {
@@ -74,10 +59,17 @@ void Vertex::calcTanVectors(std::vector<Vertex>& list, std::vector<unsigned int>
             f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z)
         };
 
-        // average in the new tangent vector
-        averageVectors(list[indices[i + 0]].tangent, tangent, counts[indices[i + 0]]++);
-        averageVectors(list[indices[i + 1]].tangent, tangent, counts[indices[i + 1]]++);
-        averageVectors(list[indices[i + 2]].tangent, tangent, counts[indices[i + 2]]++);
+        list[indices[i + 0]].tangent += tangent;
+        list[indices[i + 1]].tangent += tangent;
+        list[indices[i + 2]].tangent += tangent;
+
+        counts[indices[i + 0]]++;
+        counts[indices[i + 1]]++;
+        counts[indices[i + 2]]++;
+    }
+
+    for (unsigned int i = 0, len = (unsigned int)list.size(); i < len; i++) {
+        list[indices[i]].tangent /= (float)counts[indices[i]];
     }
 }
 
