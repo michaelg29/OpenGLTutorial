@@ -342,19 +342,6 @@ void emitRay() {
 
 void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    switch (action)
-    {
-    case GLFW_RELEASE:
-        std::cout << "Release code " << key << std::endl;
-        break;
-    case GLFW_PRESS:
-        std::cout << "Press code " << key << std::endl;
-        break;
-    case GLFW_REPEAT:
-        std::cout << "Repeat code " << key << std::endl;
-        break;
-    };
-
     if (Keyboard::keyWentDown(GLFW_KEY_ESCAPE))
     {
         scene.setShouldClose(true);
