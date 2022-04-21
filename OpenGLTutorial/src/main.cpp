@@ -67,7 +67,9 @@ std::string Shader::defaultDirectory = "assets/shaders";
 
 #include "physics/collisionmesh.h"
 
-void renderScene(Shader shader);
+void renderScene(Shader objectShader, Shader lampShader);
+void renderObjects(Shader shader);
+void renderLamps(Shader shader);
 void processInput(double dt);
 void launchItem();
 void emitRay();
@@ -96,6 +98,7 @@ int main() {
     Shader::loadIntoDefault("defaultHead.gh");
 
     Shader shader(true, "instanced/instanced.vs", "object.fs");
+    Shader lampShader(true, "instanced/instanced.vs", "lamp.fs");
     Shader boxShader(false, "instanced/box.vs", "instanced/box.fs");
     
     Shader dirShadowShader(false, "shadows/dirSpotShadow.vs",
@@ -274,7 +277,8 @@ int main() {
         // render scene normally
         scene.defaultFBO.activate();
         scene.renderShader(shader);
-        renderScene(shader);
+        scene.renderShader(lampShader);
+        renderScene(shader, lampShader);
 
         // render boxes
         scene.renderShader(boxShader, false);
@@ -292,16 +296,19 @@ int main() {
     return 0;
 }
 
-void renderScene(Shader shader) {
-    if (sphere.currentNoInstances > 0) {
-        scene.renderInstances(sphere.id, shader, (float)dt);
-    }
+void renderScene(Shader objectShader, Shader lampShader) {
+    renderObjects(objectShader);
+    renderLamps(lampShader);
+}
 
-    //scene.renderInstances(cube.id, shader, dt);
-
-    scene.renderInstances(lamp.id, shader, (float)dt);
-
+void renderObjects(Shader shader) {
+    scene.renderInstances(sphere.id, shader, (float)dt);
+    scene.renderInstances(cube.id, shader, (float)dt);
     scene.renderInstances(wall.id, shader, (float)dt);
+}
+
+void renderLamps(Shader shader) {
+    scene.renderInstances(lamp.id, shader, (float)dt);
 }
 
 void processInput(double dt) {
