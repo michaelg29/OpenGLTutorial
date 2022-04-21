@@ -59,7 +59,7 @@ double dt = 0.0f; // tme btwn frames
 double lastFrame = 0.0f; // time of last frame
 
 Sphere sphere(10);
-//Cube cube(10);
+Cube cube(10);
 Lamp lamp(4);
 Brickwall wall;
 
@@ -124,7 +124,7 @@ int main() {
 
     scene.registerModel(&sphere);
 
-    //scene.registerModel(&cube);
+    scene.registerModel(&cube);
 
     Box box;
     box.init();
@@ -167,7 +167,7 @@ int main() {
             0.5f, 50.0f
         );
         // create physical model for each lamp
-        scene.generateInstance(lamp.id, glm::vec3(10.0f, 0.25f, 10.0f), 0.25f, pointLightPositions[i]);
+        scene.generateInstance(lamp.id, glm::vec3(0.5f), 0.25f, pointLightPositions[i]);
         // add lamp to scene's light source
         scene.pointLights.push_back(&pointLights[i]);
         // activate lamp in scene
@@ -186,9 +186,9 @@ int main() {
     scene.spotLights.push_back(&spotLight);
     //scene.activeSpotLights = 1; // 0b00000001
 
-    //scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
+    scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
     glm::vec3 cubePositions[] = {
-        { 1.0f, 3.0f, -5.0f },
+        { 1.0f, 2.0f, 1.0f },
         { -7.25f, 2.1f, 1.5f },
         { -15.0f, 2.55f, 9.0f },
         { 4.0f, -3.5f, 5.0f },
