@@ -3,6 +3,17 @@
 #include <iostream>
 
 /*
+    static methods
+*/
+
+// load from file and return texture object
+Texture Texture::loadFromFile(std::string dir, std::string path, aiTextureType type) {
+    Texture tex(dir, path, type);
+    tex.load();
+    return tex;
+}
+
+/*
     constructor
 */
 

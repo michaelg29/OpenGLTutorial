@@ -15,6 +15,13 @@
 class Texture {
 public:
     /*
+        static methods
+    */
+
+    // load from file and return texture object
+    static Texture loadFromFile(std::string dir, std::string path, aiTextureType type);
+
+    /*
         constructor
     */
 
