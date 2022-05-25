@@ -16,6 +16,7 @@ uniform mat4 view;
 uniform mat4 projection;
 
 uniform vec3 viewPos;
+uniform bool noNormalMap;
 
 void main() {
 	// get position in world space
@@ -25,32 +26,57 @@ void main() {
 	// set texture coordinate
 	vs_out.TexCoord = aTexCoord;
 
-	// determine normal vector in tangent space
-	vs_out.tanLights.Normal = normalize(normalModel * aNormal);
+	if (noNormalMap) {
+		// determine normal vector in tangent space
+		vs_out.tanLights.Normal = normalize(aNormal);
 
-	// calculate tangent space matrix
-	vec3 T = normalize(normalModel * aTangent);
-	vec3 N = vs_out.tanLights.Normal;
-	T = normalize(T - dot(T, N) * N); // re-orthogonalize T with respect to N
-	vec3 B = cross(N, T); // get B, perpendicular to N and T
-	mat3 TBNinv = transpose(mat3(T, B, N)); // orthogonal matrix => transpose = inverse
+		// transform positions to the tangent space
+		vs_out.tanLights.FragPos = vs_out.FragPos;
+		vs_out.tanLights.viewPos = viewPos;
 
-	// transform positions to the tangent space
-	vs_out.tanLights.FragPos = TBNinv * vs_out.FragPos;
-	vs_out.tanLights.viewPos = TBNinv * viewPos;
+		// directional light
+		vs_out.tanLights.dirLightDirection = dirLight.direction;
 
-	// directional light
-	vs_out.tanLights.dirLightDirection = TBNinv * dirLight.direction;
+		// point lights
+		for (int i = 0; i < noPointLights; i++) {
+			vs_out.tanLights.pointLightPositions[i] = pointLights[i].position;
+		}
 
-	// point lights
-	for (int i = 0; i < noPointLights; i++) {
-		vs_out.tanLights.pointLightPositions[i] = TBNinv * pointLights[i].position;
+		// spot lights
+		for (int i = 0; i < noSpotLights; i++) {
+			vs_out.tanLights.spotLightPositions[i] = spotLights[i].position;
+			vs_out.tanLights.spotLightDirections[i] = spotLights[i].direction;
+		}
 	}
+	else
+	{
+		// determine normal vector in tangent space
+		vs_out.tanLights.Normal = normalize(normalModel * aNormal);
 
-	// spot lights
-	for (int i = 0; i < noSpotLights; i++) {
-		vs_out.tanLights.spotLightPositions[i] = TBNinv * spotLights[i].position;
-		vs_out.tanLights.spotLightDirections[i] = TBNinv * spotLights[i].direction;
+		// calculate tangent space matrix
+		vec3 T = normalize(normalModel * aTangent);
+		vec3 N = vs_out.tanLights.Normal;
+		T = normalize(T - dot(T, N) * N); // re-orthogonalize T with respect to N
+		vec3 B = cross(N, T); // get B, perpendicular to N and T
+		mat3 TBNinv = transpose(mat3(T, B, N)); // orthogonal matrix => transpose = inverse
+
+		// transform positions to the tangent space
+		vs_out.tanLights.FragPos = TBNinv * vs_out.FragPos;
+		vs_out.tanLights.viewPos = TBNinv * viewPos;
+
+		// directional light
+		vs_out.tanLights.dirLightDirection = TBNinv * dirLight.direction;
+
+		// point lights
+		for (int i = 0; i < noPointLights; i++) {
+			vs_out.tanLights.pointLightPositions[i] = TBNinv * pointLights[i].position;
+		}
+
+		// spot lights
+		for (int i = 0; i < noSpotLights; i++) {
+			vs_out.tanLights.spotLightPositions[i] = TBNinv * spotLights[i].position;
+			vs_out.tanLights.spotLightDirections[i] = TBNinv * spotLights[i].direction;
+		}
 	}
 
 	// set output for fragment shader
