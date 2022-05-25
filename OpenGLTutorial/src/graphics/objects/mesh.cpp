@@ -175,48 +175,45 @@ void Mesh::setupMaterial(Material mat) {
 // render number of instances using shader
 void Mesh::render(Shader shader, unsigned int noInstances) {
     shader.setBool("noNormalMap", true);
+    shader.setBool("noTex", true);
 
-    if (noTex) {
-        // materials
-        shader.set4Float("material.diffuse", diffuse);
-        shader.set4Float("material.specular", specular);
-        shader.setBool("noTex", true);
-    }
-    else {
-        // textures
-        unsigned int diffuseIdx = 0;
-        unsigned int normalIdx = 0;
-        unsigned int specularIdx = 0;
+    // materials
+    shader.set4Float("material.diffuse", diffuse);
+    shader.set4Float("material.specular", specular);
 
-        for (unsigned int i = 0; i < textures.size(); i++) {
-            // activate texture
-            glActiveTexture(GL_TEXTURE0 + i);
+    // textures
+    unsigned int diffuseIdx = 0;
+    unsigned int normalIdx = 0;
+    unsigned int specularIdx = 0;
 
-            // retrieve texture info
-            std::string name;
-            switch (textures[i].type) {
-            case aiTextureType_DIFFUSE:
-                name = "diffuse" + std::to_string(diffuseIdx++);
-                shader.setBool("noTex", false);
-                break;
-            case aiTextureType_NORMALS:
-                name = "normal" + std::to_string(normalIdx++);
-                shader.setBool("noNormalMap", false);
-                break;
-            case aiTextureType_SPECULAR:
-                name = "specular" + std::to_string(specularIdx++);
-                shader.setBool("noTex", false);
-                break;
-            default:
-                name = textures[i].name;
-                break;
-            }
+    for (unsigned int i = 0; i < textures.size(); i++) {
+        // activate texture
+        glActiveTexture(GL_TEXTURE0 + i);
 
-            // set the shader value
-            shader.setInt(name, i);
-            // bind texture
-            textures[i].bind();
+        // retrieve texture info
+        std::string name;
+        switch (textures[i].type) {
+        case aiTextureType_DIFFUSE:
+            name = "diffuse" + std::to_string(diffuseIdx++);
+            shader.setBool("noTex", false);
+            break;
+        case aiTextureType_NORMALS:
+            name = "normal" + std::to_string(normalIdx++);
+            shader.setBool("noNormalMap", false);
+            break;
+        case aiTextureType_SPECULAR:
+            name = "specular" + std::to_string(specularIdx++);
+            shader.setBool("noTex", false);
+            break;
+        default:
+            name = textures[i].name;
+            break;
         }
+
+        // set the shader value
+        shader.setInt(name, i);
+        // bind texture
+        textures[i].bind();
     }
     
     VAO.bind();
