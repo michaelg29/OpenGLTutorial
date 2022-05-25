@@ -15,6 +15,27 @@ This is a 3D graphics engine using OpenGL in C and C++. It makes use of several 
 
 ### Components
 
+- Dedicated Game Engine (Scene class)
+	- Model/Instance manager
+- Rendering
+	- Shader class
+		- Compilation/linking
+		- Uniform variable management
+	- Vertex memory management
+		- Allocation, attribute pointers, updating
+	- Text rendering using Freetype
+- I/O Engine
+	- Keyboard, Mouse, Joystick input
+	- Movable camera
+- Physics
+	- Rigid bodies: size, position, rotation, mass, movement
+	- Natural forces and energy transfer
+	- Collision system using an Octree
+	- Collision reaction
+- Lighting
+	- Support for point, spot, and directional lighting
+	- Shadows achieved using FBOs
+
 ### Credits
 
 - A good portion of the content comes from the comprehensive tutorial site, [Learn OpenGL](https://learnopengl.com/) by Joey de Vries
