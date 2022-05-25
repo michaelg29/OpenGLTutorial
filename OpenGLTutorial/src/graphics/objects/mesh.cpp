@@ -197,6 +197,7 @@ void Mesh::render(Shader shader, unsigned int noInstances) {
             switch (textures[i].type) {
             case aiTextureType_DIFFUSE:
                 name = "diffuse" + std::to_string(diffuseIdx++);
+                shader.setBool("noTex", false);
                 break;
             case aiTextureType_NORMALS:
                 name = "normal" + std::to_string(normalIdx++);
@@ -204,6 +205,7 @@ void Mesh::render(Shader shader, unsigned int noInstances) {
                 break;
             case aiTextureType_SPECULAR:
                 name = "specular" + std::to_string(specularIdx++);
+                shader.setBool("noTex", false);
                 break;
             default:
                 name = textures[i].name;
@@ -215,8 +217,6 @@ void Mesh::render(Shader shader, unsigned int noInstances) {
             // bind texture
             textures[i].bind();
         }
-
-        shader.setBool("noTex", false);
     }
     
     VAO.bind();
