@@ -4,12 +4,14 @@
     define initial static values
 */
 
+#define KEY_ACCESS_TIMEOUT 4
+
 std::vector<void(*)(GLFWwindow* window, int key, int scancode, int action, int mods)> Keyboard::keyCallbacks;
 
 // key state array (true for down, false for up)
 bool Keyboard::keys[GLFW_KEY_LAST] = { 0 };
 // key changed array (true if changed)
-bool Keyboard::keysChanged[GLFW_KEY_LAST] = { 0 };
+char Keyboard::keysChanged[GLFW_KEY_LAST] = { 0 };
 
 /*
     static callback
@@ -46,10 +48,7 @@ bool Keyboard::key(int key) {
 
 // get if key recently changed
 bool Keyboard::keyChanged(int key) {
-    bool ret = keysChanged[key];
-    // set to false because change no longer new
-    keysChanged[key] = false;
-    return ret;
+    return keysChanged[key];
 }
 
 // get if key recently changed and is up
@@ -60,4 +59,15 @@ bool Keyboard::keyWentDown(int key) {
 // get if key recently changed and is down
 bool Keyboard::keyWentUp(int key) {
     return !keys[key] && keyChanged(key);
+}
+
+void Keyboard::processChangedKeys() {
+    for (int i = 0; i < GLFW_KEY_LAST; i++) {
+        if (keysChanged[i]) {
+            if (++keysChanged[i] >= KEY_ACCESS_TIMEOUT + 1) { // +1 because turned on then incremented in same frame
+                // key timeout
+                keysChanged[i] = 0;
+            }
+        }
+    }
 }
