@@ -56,6 +56,8 @@ public:
     // return if button changed and is now down
     static bool buttonWentDown(int button);
 
+    static void clearButtonsChanged();
+
 private:
     /*
         static mouse values

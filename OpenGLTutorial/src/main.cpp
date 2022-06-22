@@ -314,9 +314,6 @@ void renderLamps(Shader shader) {
 }
 
 void processInput(double dt) {
-    // process input with cameras
-    scene.processInput(dt);
-
     // update flash light
     if (States::isIndexActive(&scene.activeSpotLights, 0)) {
         scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
@@ -324,6 +321,9 @@ void processInput(double dt) {
         scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
         scene.spotLights[0]->updateMatrices();
     }
+
+    // process input with cameras
+    scene.processInput(dt);
 }
 
 void launchItem() {

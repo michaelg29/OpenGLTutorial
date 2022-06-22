@@ -40,7 +40,7 @@ public:
 
     // clear keys changed array based on keysAccessed
     // to be called every iteration
-    static void processChangedKeys();
+    static void clearKeysChanged();
 
 private:
     /*
@@ -50,7 +50,7 @@ private:
     // key state array (true for down, false for up)
     static bool keys[];
     // key changed array (true if changed)
-    static char keysChanged[];
+    static bool keysChanged[];
 };
 
 #endif

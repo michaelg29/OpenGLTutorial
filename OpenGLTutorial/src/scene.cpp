@@ -309,6 +309,9 @@ void Scene::processInput(double dt) {
             updateCameraMatrices(activeCamera);
         }
     }
+
+    Keyboard::clearKeysChanged();
+    Mouse::clearButtonsChanged();
 }
 
 void Scene::keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods)

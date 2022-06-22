@@ -166,3 +166,7 @@ bool Mouse::buttonWentUp(int button) {
 bool Mouse::buttonWentDown(int button) {
     return buttons[button] && buttonChanged(button);
 }
+
+void Mouse::clearButtonsChanged() {
+    memset(buttonsChanged, 0, (size_t)GLFW_MOUSE_BUTTON_LAST);
+}
